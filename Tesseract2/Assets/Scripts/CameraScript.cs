@@ -12,6 +12,7 @@ public class CameraScript : MonoBehaviour
 {
     public RawImage background;
     public TesseractDemoScript tesseract;
+    public TMP_Dropdown options;
 
 
     private bool camAvailable;
@@ -250,6 +251,96 @@ public class CameraScript : MonoBehaviour
         //tesseract.displayText.text = (tesseract.displayText.rectTransform.sizeDelta.x/2).ToString() + " " + (tesseract.displayText.rectTransform.sizeDelta.y / 2).ToString() + " " + test.height.ToString() + " " + test.width.ToString(); 
 
         yield return null;
+
+        float siz = 0;
+        int n = 0;
+
+        foreach(Transform child in background.transform)
+        {
+            n++;
+            siz += child.gameObject.GetComponent<TextMeshProUGUI>().fontSize;
+        }
+
+        float etendue = siz / n;
+
+        float vitesse = 300f;
+
+        if(options.value == 0)
+        {
+            while (true)
+            {
+                List<float> positions = new List<float>();
+
+                foreach (Transform child in background.transform)
+                {
+                    positions.Add((Random.Range(0, 2 * etendue) - etendue) / vitesse);
+                }
+
+
+                for (int i = 0; i < vitesse; i++)
+                {
+                    int k = 0;
+                    foreach (Transform child in background.transform)
+                    {
+                        Vector2 currentPosition = child.gameObject.GetComponent<RectTransform>().position;
+                        child.gameObject.GetComponent<RectTransform>().position = new Vector2(currentPosition.x, currentPosition.y + positions[k]);
+                        k++;
+                    }
+                    yield return null;
+                }
+
+                for (int i = 0; i < vitesse; i++)
+                {
+                    int k = 0;
+                    foreach (Transform child in background.transform)
+                    {
+                        Vector2 currentPosition = child.gameObject.GetComponent<RectTransform>().position;
+                        child.gameObject.GetComponent<RectTransform>().position = new Vector2(currentPosition.x, currentPosition.y - positions[k]);
+                        k++;
+                    }
+                    yield return null;
+                }
+
+            }
+        }
+        else if (options.value == 1)
+        {
+            while (true)
+            {
+                List<float> rotations = new List<float>();
+
+                foreach (Transform child in background.transform)
+                {
+                    rotations.Add((Random.Range(0, 150) - 75) / vitesse);
+                }
+
+
+                for (int i = 0; i < vitesse; i++)
+                {
+                    int k = 0;
+                    foreach (Transform child in background.transform)
+                    {
+                        Vector3 currentOrientaion = child.gameObject.GetComponent<RectTransform>().rotation.eulerAngles;
+                        child.gameObject.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, currentOrientaion.z + rotations[k]);
+                        k++;
+                    }
+                    yield return null;
+                }
+
+                for (int i = 0; i < vitesse; i++)
+                {
+                    int k = 0;
+                    foreach (Transform child in background.transform)
+                    {
+                        Vector3 currentOrientaion = child.gameObject.GetComponent<RectTransform>().rotation.eulerAngles;
+                        child.gameObject.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, currentOrientaion.z - rotations[k]);
+                        k++;
+                    }
+                    yield return null;
+                }
+
+            }
+        }
     }
 
 }

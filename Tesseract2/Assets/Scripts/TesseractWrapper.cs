@@ -195,7 +195,7 @@ public class TesseractWrapper
                 Box box = boxes[index];
                 DrawLines(_highlightedTexture,
                     new Rect(box.x, _highlightedTexture.height - box.y - box.h, box.w, box.h),
-                    Color.green);
+                    Color.white);
                 n += 1;
                 text_size += box.h;
             }
@@ -224,19 +224,18 @@ public class TesseractWrapper
             Debug.Log(words[i] + " -> " + confidence[i]);
             if (confidence[i] >= MinimumConfidence)
             {
-                
                 Box box = boxes[i];
-                TextMeshProUGUI te = GameObject.Instantiate(prefab, new Vector3(0,0,0), Quaternion.identity);
-                te.transform.SetParent(parent.transform);
-                te.text = words[i];
-                //te.fontSize = box.h;
-                te.rectTransform.sizeDelta = new Vector2(box.w, box.h);
-                te.rectTransform.position = new Vector3((Screen.width/2 - parent.rectTransform.sizeDelta.x/2) + box.x + te.rectTransform.sizeDelta.x / 2, (Screen.height/2 - parent.rectTransform.sizeDelta.y/2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y/2, 0);
-                /*
-                te.rectTransform.sizeDelta = new Vector2(box.w*rapport,box.h*rapport);
-                te.rectTransform.position = new Vector3((box.x*rapport)+te.rectTransform.sizeDelta.x/2,(Screen.height-box.y*rapport)+te.rectTransform.sizeDelta.y/2, 0);
-                */
-                
+                float decalage = (float)box.w / (float)words[i].Length;
+                for (int j =0; j < words[i].Length; j++)
+                {
+                    TextMeshProUGUI te = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+                    te.transform.SetParent(parent.transform);
+                    te.text = words[i][j].ToString();
+                    //te.fontSize = box.h;
+                    te.rectTransform.sizeDelta = new Vector2(decalage, (float)box.h);
+                    te.rectTransform.position = new Vector3((Screen.width / 2 - parent.rectTransform.sizeDelta.x / 2) + box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (Screen.height / 2 - parent.rectTransform.sizeDelta.y / 2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
+
+                }
                 result.Append(words[i]);
                 result.Append(" ");
             }
@@ -256,7 +255,7 @@ public class TesseractWrapper
         {
             for (int y=y1; y<=y2; y++)
             {
-                texture.SetPixel(x, y, color);
+                texture.SetPixel(x, y, Color.white);
             }
         }
 
@@ -281,6 +280,8 @@ public class TesseractWrapper
         */
         texture.Apply();
     }
+
+
 
     public Texture2D GetHighlightedTexture()
     {
