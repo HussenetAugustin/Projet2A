@@ -221,7 +221,7 @@ public class TesseractWrapper
 
         for (i = 0; i < boxes.Length; i++)
         {
-            Debug.Log(words[i] + " -> " + confidence[i]);
+            //Debug.Log(words[i] + " -> " + confidence[i]);
             if (confidence[i] >= MinimumConfidence)
             {
                 Box box = boxes[i];
@@ -233,8 +233,8 @@ public class TesseractWrapper
                     te.text = words[i][j].ToString();
                     //te.fontSize = box.h;
                     te.rectTransform.sizeDelta = new Vector2(decalage, (float)box.h);
-                    te.rectTransform.position = new Vector3((Screen.width / 2 - parent.rectTransform.sizeDelta.x / 2) + box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (Screen.height / 2 - parent.rectTransform.sizeDelta.y / 2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
-
+                    //te.rectTransform.position = new Vector3((Screen.width / 2 - parent.rectTransform.sizeDelta.x / 2) + box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (Screen.height / 2 - parent.rectTransform.sizeDelta.y / 2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
+                    te.rectTransform.anchoredPosition = new Vector3(box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
                 }
                 result.Append(words[i]);
                 result.Append(" ");
