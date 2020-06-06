@@ -11,13 +11,15 @@ public class TesseractDriver
 {
     public TesseractWrapper _tesseract;
     public RawImage parent;
+    public float x;
+    public float y;
     public TextMeshProUGUI prefab;
     public float rapport;
     private static readonly List<string> fileNames = new List<string> {"tessdata.tgz"};
 
     public string CheckTessVersion()
     {
-        _tesseract = new TesseractWrapper(rapport, parent, prefab);
+        _tesseract = new TesseractWrapper(rapport, parent, prefab, x, y);
 
         try
         {
@@ -46,7 +48,7 @@ public class TesseractDriver
 
     public void OcrSetup(UnityAction onSetupComplete)
     {
-        _tesseract = new TesseractWrapper(rapport, parent, prefab);
+        _tesseract = new TesseractWrapper(rapport, parent, prefab, x, y);
 
 #if UNITY_EDITOR
         string datapath = Path.Combine(Application.streamingAssetsPath, "tessdata");

@@ -24,6 +24,10 @@ public class TesseractWrapper
     public float rapport;
     public TextMeshProUGUI prefab;
     public RawImage parent;
+    public float x;
+    public float y;
+    private float rapport1;
+    private float rapport2;
     private IntPtr _tessHandle;
     private Texture2D _highlightedTexture;
     private string _errorMsg;
@@ -69,7 +73,7 @@ public class TesseractWrapper
     [DllImport(TesseractDllName)]
     private static extern IntPtr TessBaseAPIAllWordConfidences(IntPtr handle);
 
-    public TesseractWrapper(float r, RawImage p, TextMeshProUGUI pre)
+    public TesseractWrapper(float r, RawImage p, TextMeshProUGUI pre, float width, float height)
     {
         prefab = pre;
         rapport = r;
@@ -77,6 +81,8 @@ public class TesseractWrapper
         _tessHandle = IntPtr.Zero;
         n = 0;
         text_size = 0;
+        x = width;
+        y = height;
     }
 
     public string Version()
@@ -219,22 +225,34 @@ public class TesseractWrapper
         string[] words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
         StringBuilder result = new StringBuilder();
 
+        
+        rapport1 = Screen.width / x;
+        rapport2 = Screen.height / y;
+        
+        /*
+        rapport2 = Screen.width / x;
+        rapport1 = Screen.height / y;
+        */
+        
         for (i = 0; i < boxes.Length; i++)
         {
             //Debug.Log(words[i] + " -> " + confidence[i]);
             if (confidence[i] >= MinimumConfidence)
             {
                 Box box = boxes[i];
-                float decalage = (float)box.w / (float)words[i].Length;
+                float decalage = (float)box.w * rapport1 / (float)words[i].Length;
                 for (int j =0; j < words[i].Length; j++)
                 {
-                    TextMeshProUGUI te = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+                    //TextMeshProUGUI te = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+                    TextMeshProUGUI te = GameObject.Instantiate(prefab, parent.transform);
+
                     te.transform.SetParent(parent.transform);
                     te.text = words[i][j].ToString();
                     //te.fontSize = box.h;
-                    te.rectTransform.sizeDelta = new Vector2(decalage, (float)box.h);
+                    te.rectTransform.sizeDelta = new Vector2(decalage, (float)box.h * rapport2);
                     //te.rectTransform.position = new Vector3((Screen.width / 2 - parent.rectTransform.sizeDelta.x / 2) + box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (Screen.height / 2 - parent.rectTransform.sizeDelta.y / 2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
-                    te.rectTransform.anchoredPosition = new Vector3(box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
+                    te.rectTransform.anchoredPosition = new Vector3(box.x*rapport1 + te.rectTransform.sizeDelta.x / 2 + j * decalage, (parent.rectTransform.sizeDelta.y - box.y*rapport2) - te.rectTransform.sizeDelta.y / 2, 0);
+                    //te.rectTransform.anchoredPosition = new Vector3(0, 0, 0);
                 }
                 result.Append(words[i]);
                 result.Append(" ");
@@ -255,7 +273,7 @@ public class TesseractWrapper
         {
             for (int y=y1; y<=y2; y++)
             {
-                texture.SetPixel(x, y, Color.white);
+                texture.SetPixel(x, y, color);
             }
         }
 

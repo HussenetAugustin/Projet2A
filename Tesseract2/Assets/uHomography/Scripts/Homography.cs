@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 namespace uHomography
 {
@@ -14,6 +15,11 @@ public class Homography : MonoBehaviour
     KeyCode handleToggleKey = KeyCode.None;
 
     bool isHandlesVisible_ = true;
+    public GameObject anchor;
+    public RawImage image;
+    public Positions position;
+    public Taille taille;
+    public Taille tailleImage;
 
     [SerializeField]
     int layer = 31;
@@ -58,13 +64,14 @@ public class Homography : MonoBehaviour
         uiCamera = go.AddComponent<Camera>();
         uiCamera.clearFlags = CameraClearFlags.Depth;
         uiCamera.orthographic = true;
-        uiCamera.orthographicSize = 5.5f;
+        uiCamera.orthographicSize = taille.y;
         uiCamera.useOcclusionCulling = false;
         uiCamera.allowHDR = false;
         uiCamera.allowMSAA = false;
         uiCamera.nearClipPlane = 1f;
         uiCamera.farClipPlane = 100f;
-        uiCamera.depth = 10;
+        uiCamera.depth = 1;
+        //uiCamera.backgroundColor = new Color(0, 0, 0, 0);
 
         var raycaster = go.AddComponent<Physics2DRaycaster>();
         raycaster.eventMask = 1 << layer;
@@ -78,7 +85,12 @@ public class Homography : MonoBehaviour
         Assert.IsNotNull(prefab, VertexPrefabPath + " was not found.");
 
         var go = Instantiate(prefab, uiCamera.transform);
+        //var go = Instantiate(prefab, anchor.transform);
+
         go.transform.localPosition = pos;
+        float taille = (image.rectTransform.sizeDelta.x > image.rectTransform.sizeDelta.y ? image.rectTransform.sizeDelta.x : image.rectTransform.sizeDelta.y) / 10f;
+
+        go.transform.localScale = new Vector3(taille,taille,1f);
         vertex = go.GetComponent<DraggableVertex>();
         Assert.IsNotNull(vertex, "The Vertex prefab does not have DraggableVertex component.");
 
@@ -189,11 +201,30 @@ public class Homography : MonoBehaviour
         CreateCameraIfNeeded();
         uiCamera.cullingMask = 1 << layer;
 
-        CreateVertexIfNeeded(ref v00, new Vector3(-5f, -5f, 10f));
-        CreateVertexIfNeeded(ref v01, new Vector3(-5f,  5f, 10f));
-        CreateVertexIfNeeded(ref v10, new Vector3( 5f, -5f, 10f));
-        CreateVertexIfNeeded(ref v11, new Vector3( 5f,  5f, 10f));
-        v00.gameObject.layer = layer;
+        float x = image.rectTransform.sizeDelta.x;
+        float y = image.rectTransform.sizeDelta.y;
+
+            /*
+            CreateVertexIfNeeded(ref v00, new Vector3(2*position.dlc.x, 2*position.dlc.y, 10f));
+            CreateVertexIfNeeded(ref v01, new Vector3(2*position.ulc.x, 2*position.ulc.y, 10f));
+            CreateVertexIfNeeded(ref v10, new Vector3(2*position.drc.x, 2*position.drc.y, 10f));
+            CreateVertexIfNeeded(ref v11, new Vector3(2*position.urc.x, 2*position.urc.y, 10f));
+            */
+
+
+        CreateVertexIfNeeded(ref v00, new Vector3(-2 * position.urc.x, -2 * position.urc.y, 10f));
+        CreateVertexIfNeeded(ref v01, new Vector3(-2 * position.drc.x, -2 * position.drc.y, 10f));
+        CreateVertexIfNeeded(ref v10, new Vector3(-2 * position.ulc.x, -2 * position.ulc.y, 10f));
+        CreateVertexIfNeeded(ref v11, new Vector3(-2 * position.dlc.x, -2 * position.dlc.y, 10f));
+
+
+            /*
+            CreateVertexIfNeeded(ref v00, new Vector3(-tailleImage.x, -tailleImage.y, 10f));
+            CreateVertexIfNeeded(ref v01, new Vector3(-tailleImage.x, tailleImage.y, 10f));
+            CreateVertexIfNeeded(ref v10, new Vector3(tailleImage.x, -tailleImage.y, 10f));
+            CreateVertexIfNeeded(ref v11, new Vector3(tailleImage.x, tailleImage.y, 10f));
+            */
+            v00.gameObject.layer = layer;
         v01.gameObject.layer = layer;
         v10.gameObject.layer = layer;
         v11.gameObject.layer = layer;

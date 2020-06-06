@@ -26,6 +26,8 @@ public class TesseractDemoScript : MonoBehaviour
         _tesseractDriver.rapport = rapport;
         _tesseractDriver.prefab = prefab;
         _tesseractDriver.parent = parent;
+        _tesseractDriver.x = texture.width;
+        _tesseractDriver.y = texture.height;
         Recoginze(texture);
     }
 
