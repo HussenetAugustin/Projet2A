@@ -15,7 +15,7 @@ public class TesseractDemoScript : MonoBehaviour
     private Texture2D _texture;
     private float textSize;
     
-
+ 
     public void Launch()
     {
         Texture2D texture = new Texture2D(imageToRecognize.width, imageToRecognize.height, TextureFormat.ARGB32, false);
@@ -62,12 +62,7 @@ public class TesseractDemoScript : MonoBehaviour
         else
             Debug.Log(text);
     }
-    /*
-    private void LateUpdate()
-    {
-        displayText.text = _text;
-    }
-    */
+
 
     private void SetImageDisplay()
     {

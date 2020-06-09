@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c13c71f45c21e5945a8028b06be60b1d, type: 3}
+  m_Name: PositionsExtract
+  m_EditorClassIdentifier: 
+  ulc: {x: -637, y: 144}
+  urc: {x: 468, y: 327}
+  dlc: {x: -135, y: -360}
+  drc: {x: 383, y: -360}

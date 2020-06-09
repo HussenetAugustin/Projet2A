@@ -229,10 +229,7 @@ public class TesseractWrapper
         rapport1 = Screen.width / x;
         rapport2 = Screen.height / y;
         
-        /*
-        rapport2 = Screen.width / x;
-        rapport1 = Screen.height / y;
-        */
+        // Pour chaque lettre reconnue, on créé un GameObject de type TextMeshPro dans lequel on écrit la lettre reconnue, puis on la place au bon endroit devant l'image.
         
         for (i = 0; i < boxes.Length; i++)
         {
@@ -250,6 +247,8 @@ public class TesseractWrapper
                     te.text = words[i][j].ToString();
                     //te.fontSize = box.h;
                     te.rectTransform.sizeDelta = new Vector2(decalage, (float)box.h * rapport2);
+                    float a = te.rectTransform.sizeDelta.x > te.rectTransform.sizeDelta.y ? te.rectTransform.sizeDelta.x : te.rectTransform.sizeDelta.y;
+                    te.fontSize = a;
                     //te.rectTransform.position = new Vector3((Screen.width / 2 - parent.rectTransform.sizeDelta.x / 2) + box.x + te.rectTransform.sizeDelta.x / 2 + j * decalage, (Screen.height / 2 - parent.rectTransform.sizeDelta.y / 2) + (parent.rectTransform.sizeDelta.y - box.y) - te.rectTransform.sizeDelta.y / 2, 0);
                     te.rectTransform.anchoredPosition = new Vector3(box.x*rapport1 + te.rectTransform.sizeDelta.x / 2 + j * decalage, (parent.rectTransform.sizeDelta.y - box.y*rapport2) - te.rectTransform.sizeDelta.y / 2, 0);
                     //te.rectTransform.anchoredPosition = new Vector3(0, 0, 0);
@@ -262,6 +261,8 @@ public class TesseractWrapper
         return result.ToString();
     }
 
+
+    // Fonction permettant de recouvrir d'un rectangle blanc le texte reconnu par tesseract.
     private void DrawLines(Texture2D texture, Rect boundingRect, Color color, int thickness = 3)
     {
         int x1 = (int) boundingRect.x;
@@ -276,26 +277,6 @@ public class TesseractWrapper
                 texture.SetPixel(x, y, color);
             }
         }
-
-        /*
-        for (int x = x1; x <= x2; x++)
-        {
-            for (int i = 0; i < thickness; i++)
-            {
-                texture.SetPixel(x, y1 + i, color);
-                texture.SetPixel(x, y2 - i, color);
-            }
-        }
-
-        for (int y = y1; y <= y2; y++)
-        {
-            for (int i = 0; i < thickness; i++)
-            {
-                texture.SetPixel(x1 + i, y, color);
-                texture.SetPixel(x2 - i, y, color);
-            }
-        }
-        */
         texture.Apply();
     }
 
